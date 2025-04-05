@@ -1,18 +1,20 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom'; 
 
 const HealthCareForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const onSubmit = (data) => {
-    console.log(data); 
-    alert("Form submitted successfully!");
+    // Handle form submission
+    console.log(data);
+    // Store form data as cookies
+    document.cookie = `data=${encodeURIComponent(JSON.stringify({ name: "John" }))}; path=/`;
 
-    
-    navigate('/report');  
-  };
+    alert("Form submitted successfully!");
+    navigate('/report', { state: data });
+  }; 
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-lg">

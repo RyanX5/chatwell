@@ -4,8 +4,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Report = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const data = location.state;
 
+  // Get information from either submitted form or stored cookie
+  const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+    const [key, value] = cookie.split('=');
+    acc[key] = decodeURIComponent(value);
+    return acc;
+  }, {});
+  
+  const data = location.state || (cookies.data ? JSON.parse(cookies.data) : {});
+  
   if (!data) {
     return (
       <div className="max-w-2xl mx-auto p-6 mt-10 bg-white rounded-lg shadow-md text-center">
