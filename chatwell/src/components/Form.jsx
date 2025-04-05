@@ -1,13 +1,17 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';  
 
 const HealthCareForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const navigate = useNavigate(); 
 
   const onSubmit = (data) => {
-    // Handle form submission
-    console.log(data); // Log the form data (this is where you can send it to a backend)
+    console.log(data); 
     alert("Form submitted successfully!");
+
+    
+    navigate('/report');  
   };
 
   return (
