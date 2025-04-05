@@ -87,6 +87,17 @@ const HealthCareForm = () => {
               rows="4"
             />
           </div>
+
+          <div className="mb-4">
+            <label htmlFor="medications" className="block text-lg font-medium">Current Medications</label>
+            <textarea
+              {...register('medications')}
+              id="medications"
+              placeholder="E.g., Metformin, Lisinopril"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              rows="4"
+            />
+          </div>
         </div>
 
         {/* Lifestyle Habits */}
