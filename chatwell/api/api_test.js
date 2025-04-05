@@ -13,7 +13,7 @@ Keep in mind these user info about the user to tailor your responses: Name: " + 
 async function main() {
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",
-    contents: "Hello there",
+    contents: "Can you tell me about ways to improve my health?",
     config: {
       systemInstruction: system_instruction,
     },
