@@ -21,6 +21,8 @@ const theme = createTheme({
 });
 
 function App() {
+  const [count, setCount] = useState(0)
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
