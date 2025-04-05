@@ -7,7 +7,7 @@ import HomePage from './pages/Home';
 import Navbar from './components/Navbar';
 import Report from './pages/Report';
 import About from './pages/About';
-
+import Features from './pages/Features';
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/report" element={<Report/>}/>
           <Route path="/about" element={<About/>}/>
+          <Route path="/features" element={<Features/>}/>
         </Routes>
       </div>
     </Router>
