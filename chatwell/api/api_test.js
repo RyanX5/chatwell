@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { writeFile } from 'fs/promises';
 
 var name = "Rohan";
 var age = 23;
@@ -10,6 +11,8 @@ const ai = new GoogleGenAI({ apiKey: API_KEY });
 var system_instruction = "You are a doctor. You will respond to the user in non-technical terms.\
 Keep in mind these user info about the user to tailor your responses: Name: " + name + ", Age: " + age + ", City: " + city + ", Disease: " + disease + "."
 
+
+// Main prompting function
 async function main() {
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",
@@ -20,5 +23,6 @@ async function main() {
   });
   console.log(response.text);
 }
-
-await main();
+// Analyze
+await writeFiles()
+// await main();
