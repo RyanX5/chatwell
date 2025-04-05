@@ -16,6 +16,7 @@ const Navbar = () => {
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex space-x-6">
           <a href="/" className="hover:text-gray-200 transition duration-300">Home</a>
+          <a href="/about" className="hover:text-gray-200 transition duration-300">Features</a>
           <a href="/about" className="hover:text-gray-200 transition duration-300">About</a>
           <a href="/contact" className="hover:text-gray-200 transition duration-300">Contact</a>
         </div>
@@ -36,6 +37,7 @@ const Navbar = () => {
       <div className={`lg:hidden ${isOpen ? 'block' : 'hidden'}`}>
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue-700 mt-2 rounded-md">
           <a href="/" className="block px-3 py-2 rounded-md text-white hover:bg-blue-800 transition duration-300">Home</a>
+          <a href="/contact" className="block px-3 py-2 rounded-md text-white hover:bg-blue-800 transition duration-300">Features</a>
           <a href="/about" className="block px-3 py-2 rounded-md text-white hover:bg-blue-800 transition duration-300">About</a>
           <a href="/contact" className="block px-3 py-2 rounded-md text-white hover:bg-blue-800 transition duration-300">Contact</a>
         </div>
