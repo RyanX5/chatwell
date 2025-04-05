@@ -1,31 +1,67 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+
 import { useNavigate } from 'react-router-dom'; 
+
 
 const HealthCareForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
+
+  const onSubmit = async (data) => {
+    
+    // cookies
+    
     // Handle form submission
     console.log(data);
     // Store form data as cookies
     document.cookie = `data=${encodeURIComponent(JSON.stringify({ name: "John" }))}; path=/`;
-
-    alert("Form submitted successfully!");
-    navigate('/report', { state: data });
-  }; 
+    
+    try {
+      // Prepare the data to send
+      const payload = {
+        name: data.name,
+        age: data.age,
+        gender: data.gender,
+        conditions: data.conditions,
+        allergies: data.allergies,
+        exercise: data.exercise,
+        diet: data.diet,
+        sleep: data.sleep,
+        currentConditions: data.currentConditions,
+        goals: data.goals,
+        preferredWorkouts: data.preferredWorkouts
+      };
+  
+      const response = await fetch('http://localhost:3000/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),  // Send the data to backend
+      });
+  
+      const responseData = await response.json();  // Parse the JSON response properly
+      if (response.ok) {
+        console.log('Healthcare Recommendations:', responseData.message);
+      } else {
+        console.error('Error:', responseData.error);
+      }
+    } catch (error) {
+      console.error('Error during fetch:', error);
+    }
+  };
+  
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-lg">
       <h2 className="text-3xl font-semibold text-center mb-6">Personalized Healthcare Recommendation Form</h2>
       
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        
         {/* Personal Information */}
         <div>
           <h3 className="text-2xl font-semibold mb-4">Personal Information</h3>
-          
           <div className="mb-4">
             <label htmlFor="name" className="block text-lg font-medium">Full Name</label>
             <input
@@ -67,7 +103,6 @@ const HealthCareForm = () => {
         {/* Medical History */}
         <div>
           <h3 className="text-2xl font-semibold mb-4">Medical History</h3>
-          
           <div className="mb-4">
             <label htmlFor="conditions" className="block text-lg font-medium">Pre-existing Conditions</label>
             <textarea
@@ -85,6 +120,17 @@ const HealthCareForm = () => {
               {...register('allergies')}
               id="allergies"
               placeholder="E.g., Penicillin, Pollen"
+              className="w-full px-4 py-2 border border-gray-300 rounded-md"
+              rows="4"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="medications" className="block text-lg font-medium">Current Medications</label>
+            <textarea
+              {...register('medications')}
+              id="medications"
+              placeholder="E.g., Metformin, Lisinopril"
               className="w-full px-4 py-2 border border-gray-300 rounded-md"
               rows="4"
             />
@@ -136,49 +182,6 @@ const HealthCareForm = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-md"
             />
             {errors.sleep && <span className="text-red-500 text-sm">{errors.sleep.message}</span>}
-          </div>
-        </div>
-
-        {/* Current Health Conditions */}
-        <div>
-          <h3 className="text-2xl font-semibold mb-4">Current Health Conditions</h3>
-
-          <div className="mb-4">
-            <label htmlFor="currentConditions" className="block text-lg font-medium">Current Health Conditions</label>
-            <textarea
-              {...register('currentConditions')}
-              id="currentConditions"
-              placeholder="E.g., Asthma, Arthritis"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-              rows="4"
-            />
-          </div>
-        </div>
-
-        {/* Preferences */}
-        <div>
-          <h3 className="text-2xl font-semibold mb-4">Healthcare Preferences</h3>
-
-          <div className="mb-4">
-            <label htmlFor="goals" className="block text-lg font-medium">Healthcare Goals</label>
-            <textarea
-              {...register('goals')}
-              id="goals"
-              placeholder="E.g., Weight loss, Improve mental health"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-              rows="4"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="preferredWorkouts" className="block text-lg font-medium">Preferred Workout Types</label>
-            <input
-              {...register('preferredWorkouts')}
-              type="text"
-              id="preferredWorkouts"
-              placeholder="E.g., Yoga, Running, Weightlifting"
-              className="w-full px-4 py-2 border border-gray-300 rounded-md"
-            />
           </div>
         </div>
 

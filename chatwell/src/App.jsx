@@ -8,6 +8,9 @@ import Navbar from './components/Navbar';
 import Report from './pages/Report';
 import About from './pages/About';
 
+import Features from './pages/Features';
+
+
 function App() {
   // Check if there are any cookies
   const hasCookies = document.cookie.length > 0;
@@ -23,6 +26,7 @@ function App() {
           } />
           <Route path="/report" element={<Report/>}/>
           <Route path="/about" element={<About/>}/>
+          <Route path="/features" element={<Features/>}/>
         </Routes>
       </div>
     </Router>
