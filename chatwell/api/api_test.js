@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { writeFile } from 'fs/promises';
+
 
 var name = "Rohan";
 var age = 23;
@@ -24,5 +24,3 @@ async function main() {
   console.log(response.text);
 }
 
-// Analyze
-// await main();
