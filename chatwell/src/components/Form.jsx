@@ -1,12 +1,23 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom'; 
+
 
 const HealthCareForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
 
   const onSubmit = async (data) => {
+    
+    // cookies
+    
+    // Handle form submission
+    console.log(data);
+    // Store form data as cookies
+    document.cookie = `data=${encodeURIComponent(JSON.stringify({ name: "John" }))}; path=/`;
+    
     try {
       // Prepare the data to send
       const payload = {
@@ -42,6 +53,7 @@ const HealthCareForm = () => {
     }
   };
   
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-lg">
       <h2 className="text-3xl font-semibold text-center mb-6">Personalized Healthcare Recommendation Form</h2>
