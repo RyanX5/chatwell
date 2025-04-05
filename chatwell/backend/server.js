@@ -1,50 +1,55 @@
-const express = require('express');
 const { GoogleGenAI } = require('@google/genai');
-
+const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 3000;
 
-// Middleware to parse JSON requests
+app.use(cors());
 app.use(express.json());
 
-// Set up GoogleGenAI client with your API Key
 const API_KEY = "AIzaSyDBnqclX6HR-tzjQgTh-F58ocdwXyDh2cw";
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-// Define user information
-const name = "Rohan";
-const age = 23;
-const city = "New York";
-const disease = "Diabetes";
+// Endpoint to handle the healthcare form submission
+app.post('/submit-form', async (req, res) => {
+  const { name, age, gender, conditions, allergies, exercise, diet, sleep, currentConditions, goals, preferredWorkouts } = req.body;
 
-// Set up system instructions for the AI
-const system_instruction = `You are a doctor. You will respond to the user in non-technical terms. Keep in mind these user info about the user to tailor your responses: Name: ${name}, Age: ${age}, City: ${city}, Disease: ${disease}.`;
-
-// Endpoint to get a health improvement response
-app.post('/health-improvement', async (req, res) => {
-  const { query } = req.body; // Expecting a "query" from the request body
-
-  if (!query) {
-    return res.status(400).json({ error: 'Query is required' });
+  // Check if the required fields are present
+  if (!name || !age || !gender || !conditions) {
+    return res.status(400).json({ error: 'Name, Age, Gender, and Conditions are required' });
   }
 
-  try {
-    // Generate AI response using the GoogleGenAI API
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: query,
-      config: {
-        systemInstruction: system_instruction,
-      },
-    });
+  const resp = `You are a compassionate and highly knowledgeable doctor. \
+Your goal is to provide accurate, personalized medical advice that is easy to understand. \
+Always use clear, friendly language and avoid medical jargon. \
+Tailor your responses specifically to the user's details to ensure your advice is relevant to their situation. \
+Know these information about the user: Name: ${name}, age: ${age}, gender: ${gender}, allergies: ${allergies}, conditions: ${conditions}, exercise: ${exercise}, diet: ${diet}, sleep: ${sleep}, current conditions: ${currentConditions}, goals: ${goals}, preferred workouts: ${preferredWorkouts}.`;
 
-    // Return the AI's response as JSON
-    return res.json({ response: response.text });
+  try {
+    let response = await main(resp);
+    const final_response = {
+      message: response
+    };
+    return res.json(final_response);
   } catch (error) {
-    console.error("Error with AI response:", error);
+    console.error('Error during AI response generation:', error);
     return res.status(500).json({ error: 'Error generating response from AI' });
   }
 });
+
+// Function to handle the AI model generation
+async function main(resp) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash", // Choose the right model
+    contents: "Hello",  // Use the personalized prompt
+    config: {
+      systemInstruction: resp,
+    },
+  });
+  
+  console.log(response.text);
+  return response.text;  // Return the response text from the AI
+}
 
 // Start the server
 app.listen(port, () => {
