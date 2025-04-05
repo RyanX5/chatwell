@@ -23,6 +23,6 @@ async function main() {
   });
   console.log(response.text);
 }
+
 // Analyze
-await writeFiles()
 // await main();
