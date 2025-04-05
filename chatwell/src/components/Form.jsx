@@ -14,9 +14,9 @@ const HealthCareForm = () => {
     // cookies
     
     // Handle form submission
-    console.log(data);
+    //console.log(data);
     // Store form data as cookies
-    document.cookie = `data=${encodeURIComponent(JSON.stringify({ name: "John" }))}; path=/`;
+    //document.cookie = `data=${encodeURIComponent(JSON.stringify({ name: "John" }))}; path=/`;
     
     try {
       // Prepare the data to send
