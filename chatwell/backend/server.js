@@ -133,6 +133,87 @@ make use of all this data to create your responses. Give confident, brief, and s
   }
 });
 
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+
+app.post('/api/upload-image-chat', upload.single('image'), async (req, res) => {
+  try {
+    if (!userInfo) {
+      return res.status(400).json({ error: 'User info not found' });
+    }
+
+    const { sessionId = 'default', prompt } = req.body; // Add sessionId from the request body
+    const userPrompt = prompt || 'Please analyze this image.';
+    const imageBuffer = req.file.buffer;
+    const base64Image = imageBuffer.toString('base64');
+    const mimeType = req.file.mimetype;
+
+    // Get or initialize chat history for this session
+    if (!chatHistories.has(sessionId)) {
+      chatHistories.set(sessionId, []);
+    }
+    const history = chatHistories.get(sessionId);
+
+    // Add system instruction to history if it's a new session
+    if (history.length === 0) {
+      history.push({
+        role: 'model',
+        parts: [{
+          text: `You are a compassionate and highly knowledgeable doctor.
+Your goal is to provide accurate, personalized medical advice that is easy to understand.
+Always use clear, friendly language and avoid medical jargon.
+Tailor your responses specifically to the user's details: 
+Name: ${userInfo.name}, Gender: ${userInfo.gender}, Allergies: ${userInfo.allergies}, Diseases: ${userInfo.diseases}, Location: ${userInfo.location}.`
+        }]
+      });
+    }
+
+    // Add user message (prompt) and image to history
+    history.push({
+      role: 'user',
+      parts: [
+        { text: userPrompt },
+        {
+          inlineData: {
+            mimeType: mimeType,
+            data: base64Image,
+          }
+        }
+      ]
+    });
+
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          mimeType: mimeType,
+          data: base64Image,
+        },
+      },
+      {
+        text: userPrompt,
+      },
+    ]);
+
+    const response = result.response.text();
+
+    // Add assistant response to history
+    history.push({
+      role: 'model',
+      parts: [{ text: response }]
+    });
+
+    // Update the chat history
+    chatHistories.set(sessionId, history);
+
+    return res.status(200).json({ response });
+  } catch (err) {
+    console.error('Image chat error:', err);
+    res.status(500).json({ error: 'Failed to process image chat' });
+  }
+});
+
 // Get user information (optional endpoint for debugging)
 app.get('/api/user-info', (req, res) => {
   if (!userInfo) {
