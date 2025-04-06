@@ -1,8 +1,8 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,53 +22,76 @@ const API_KEY = "AIzaSyDBnqclX6HR-tzjQgTh-F58ocdwXyDh2cw"; // This will be repla
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Store user information
-app.post('/api/user-info', (req, res) => {
+app.post("/api/user-info", (req, res) => {
   try {
-    const { name, age, location, allergies, diseases, gender } = req.body;
-    
+    const {
+      name,
+      age,
+      location,
+      allergies,
+      diseases,
+      gender,
+      medications,
+      sleepSchedule,
+      height,
+      weight,
+      smokingStatus,
+      nationality,
+    } = req.body;
+
     // Validate required fields
     if (!name || !age || !location) {
-      return res.status(400).json({ error: 'Name, age, and location are required' });
+      return res
+        .status(400)
+        .json({ error: "Name, age, and location are required" });
     }
-    
+
     // Store user information in memory
     userInfo = {
       name,
       age,
       location,
-      allergies: allergies || 'None',
-      diseases: diseases || 'None',
-      gender: gender || 'None',
-      timestamp: new Date().toISOString()
+      nationality: nationality,
+      allergies: allergies || "None",
+      diseases: diseases || "None",
+      gender: gender || "None",
+      medications: medications || "None",
+      sleepSchedule: sleepSchedule,
+      height: height,
+      weight: weight,
+      smokingStatus: smokingStatus,
+      timestamp: new Date().toISOString(),
     };
-    
+
     // Generate a unique session ID for this user
     const sessionId = Date.now().toString();
     chatHistories.set(sessionId, []);
-    
-    console.log('User information stored:', userInfo);
-    
-    res.status(200).json({ 
-      message: 'User information stored successfully',
-      sessionId 
+
+    console.log("User information stored:", userInfo);
+
+    res.status(200).json({
+      message: "User information stored successfully",
+      sessionId,
     });
   } catch (error) {
-    console.error('Error storing user information:', error);
-    res.status(500).json({ error: 'Failed to store user information' });
+    console.error("Error storing user information:", error);
+    res.status(500).json({ error: "Failed to store user information" });
   }
 });
 
 // Chat endpoint with Gemini API integration
-app.post('/api/chat', async (req, res) => {
+app.post("/api/chat", async (req, res) => {
   try {
     if (!userInfo) {
-      return res.status(400).json({ error: 'User information not found. Please fill out the form first.' });
+      return res.status(400).json({
+        error: "User information not found. Please fill out the form first.",
+      });
     }
 
-    const { message, sessionId = 'default' } = req.body;
+    const { message, sessionId = "default" } = req.body;
 
     if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+      return res.status(400).json({ error: "Message is required" });
     }
 
     // Get or initialize chat history for this session
@@ -81,22 +104,37 @@ app.post('/api/chat', async (req, res) => {
     // Add system instruction to history if it's a new session
     if (history.length === 0) {
       history.push({
-        role: 'model',
-        parts: [{
-          text: `You are a compassionate and highly knowledgeable doctor.
+        role: "model",
+        parts: [
+          {
+            text: `You are a compassionate and highly knowledgeable doctor.
 Your goal is to provide accurate, personalized medical advice that is easy to understand.
 Always use clear, friendly language and avoid medical jargon.
-Tailor your responses specifically to the user's details to ensure your advice is relevant to their situation. Keep in mind the following info about the user: 
-Name: ${userInfo.name}, Gender: ${userInfo.gender}, Allergies: ${userInfo.allergies}, Diseases: ${userInfo.diseases}, Location: ${userInfo.location}. If possible
-make use of all this data to create your responses. Give confident, brief, and succinct responses, like a doctor would.`
-        }]
+Tailor your responses specifically to the user's details to ensure your advice is relevant to their situation. Always be receptive to analyzing medical report images.
+If the user asks to respond in their own language, use their nationality to determine their language. 
+Keep in mind the following info about the user: 
+Name: ${userInfo.name}, 
+Gender: ${userInfo.gender}, 
+Age: ${userInfo.age},
+Nationality: ${userInfo.nationality}, 
+Location: ${userInfo.location}, 
+Allergies: ${userInfo.allergies}, 
+Diseases: ${userInfo.diseases}, 
+Medications: ${userInfo.medications}, 
+Sleep Schedule: ${userInfo.sleepSchedule}, 
+Height: ${userInfo.height} cm, 
+Weight: ${userInfo.weight} kg, 
+Smoking Status: ${userInfo.smokingStatus}. 
+Use as much of this information as possible to craft responses that are confident, brief, and succinct—like a real doctor would.`,
+          },
+        ],
       });
     }
 
     // Add user message to history
     history.push({
-      role: 'user',
-      parts: [{ text: message }]
+      role: "user",
+      parts: [{ text: message }],
     });
 
     try {
@@ -107,20 +145,20 @@ make use of all this data to create your responses. Give confident, brief, and s
 
       // Add assistant response to history
       history.push({
-        role: 'model',
-        parts: [{ text: response }]
+        role: "model",
+        parts: [{ text: response }],
       });
 
       chatHistories.set(sessionId, history);
 
       res.status(200).json({ response });
     } catch (apiError) {
-      console.error('Gemini API error:', apiError);
-      if (API_KEY === "blank" || apiError.message.includes('API key')) {
+      console.error("Gemini API error:", apiError);
+      if (API_KEY === "blank" || apiError.message.includes("API key")) {
         const placeholderResponse = `Hello ${userInfo.name}! I see you're ${userInfo.age} years old and from ${userInfo.location}. I've received your message: "${message}". (Note: Gemini API key needs to be configured)`;
         history.push({
-          role: 'model',
-          parts: [{ text: placeholderResponse }]
+          role: "model",
+          parts: [{ text: placeholderResponse }],
         });
         chatHistories.set(sessionId, history);
         return res.status(200).json({ response: placeholderResponse });
@@ -128,24 +166,24 @@ make use of all this data to create your responses. Give confident, brief, and s
       throw apiError;
     }
   } catch (error) {
-    console.error('Error processing chat message:', error);
-    res.status(500).json({ error: 'Failed to process chat message' });
+    console.error("Error processing chat message:", error);
+    res.status(500).json({ error: "Failed to process chat message" });
   }
 });
 
-const multer = require('multer');
+const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 
-app.post('/api/upload-image-chat', upload.single('image'), async (req, res) => {
+app.post("/api/upload-image-chat", upload.single("image"), async (req, res) => {
   try {
     if (!userInfo) {
-      return res.status(400).json({ error: 'User info not found' });
+      return res.status(400).json({ error: "User info not found" });
     }
 
-    const { sessionId = 'default', prompt } = req.body; // Add sessionId from the request body
-    const userPrompt = prompt || 'Please analyze this image.';
+    const { sessionId = "default", prompt } = req.body; // Add sessionId from the request body
+    const userPrompt = prompt || "Please analyze this image.";
     const imageBuffer = req.file.buffer;
-    const base64Image = imageBuffer.toString('base64');
+    const base64Image = imageBuffer.toString("base64");
     const mimeType = req.file.mimetype;
 
     // Get or initialize chat history for this session
@@ -157,32 +195,48 @@ app.post('/api/upload-image-chat', upload.single('image'), async (req, res) => {
     // Add system instruction to history if it's a new session
     if (history.length === 0) {
       history.push({
-        role: 'model',
-        parts: [{
-          text: `You are a compassionate and highly knowledgeable doctor.
+        role: "model",
+        parts: [
+          {
+            text: `You are a compassionate and highly knowledgeable doctor.
 Your goal is to provide accurate, personalized medical advice that is easy to understand.
 Always use clear, friendly language and avoid medical jargon.
-Tailor your responses specifically to the user's details: 
-Name: ${userInfo.name}, Gender: ${userInfo.gender}, Allergies: ${userInfo.allergies}, Diseases: ${userInfo.diseases}, Location: ${userInfo.location}.`
-        }]
+Tailor your responses specifically to the user's details to ensure your advice is relevant to their situation. Always be receptive to analyzing medical report images.
+If the user asks to respond in their own language, use their nationality to determine their language. 
+Keep in mind the following info about the user: 
+Name: ${userInfo.name}, 
+Gender: ${userInfo.gender}, 
+Age: ${userInfo.age},
+Nationality: ${userInfo.nationality}, 
+Location: ${userInfo.location}, 
+Allergies: ${userInfo.allergies}, 
+Diseases: ${userInfo.diseases}, 
+Medications: ${userInfo.medications}, 
+Sleep Schedule: ${userInfo.sleepSchedule}, 
+Height: ${userInfo.height} cm, 
+Weight: ${userInfo.weight} kg, 
+Smoking Status: ${userInfo.smokingStatus}. 
+Use as much of this information as possible to craft responses that are confident, brief, and succinct—like a real doctor would.`,
+          },
+        ],
       });
     }
 
     // Add user message (prompt) and image to history
     history.push({
-      role: 'user',
+      role: "user",
       parts: [
         { text: userPrompt },
         {
           inlineData: {
             mimeType: mimeType,
             data: base64Image,
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const result = await model.generateContent([
       {
@@ -200,8 +254,8 @@ Name: ${userInfo.name}, Gender: ${userInfo.gender}, Allergies: ${userInfo.allerg
 
     // Add assistant response to history
     history.push({
-      role: 'model',
-      parts: [{ text: response }]
+      role: "model",
+      parts: [{ text: response }],
     });
 
     // Update the chat history
@@ -209,21 +263,21 @@ Name: ${userInfo.name}, Gender: ${userInfo.gender}, Allergies: ${userInfo.allerg
 
     return res.status(200).json({ response });
   } catch (err) {
-    console.error('Image chat error:', err);
-    res.status(500).json({ error: 'Failed to process image chat' });
+    console.error("Image chat error:", err);
+    res.status(500).json({ error: "Failed to process image chat" });
   }
 });
 
 // Get user information (optional endpoint for debugging)
-app.get('/api/user-info', (req, res) => {
+app.get("/api/user-info", (req, res) => {
   if (!userInfo) {
-    return res.status(404).json({ error: 'User information not found' });
+    return res.status(404).json({ error: "User information not found" });
   }
-  
+
   res.status(200).json(userInfo);
 });
 
 // Start the server
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
