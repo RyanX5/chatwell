@@ -4,16 +4,19 @@ import Navbar from './components/Navbar';
 import UserForm from './components/UserForm';
 import Chat from './components/Chat';
 import './App.css';
+import './components/Home'
+import HomePage from './components/Home';
 
 function App() {
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        {/* <Navbar /> */}
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<UserForm />} />
-            <Route path="/chat" element={<Chat />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/form" element={<UserForm />} />
+            <Route path="/chat" element={<Chat/>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
