@@ -18,7 +18,7 @@ let userInfo = null;
 const chatHistories = new Map();
 
 // Initialize Gemini API
-const API_KEY = "AIzaSyDBnqclX6HR-tzjQgTh-F58ocdwXyDh2cw"; // This will be replaced by the user
+const API_KEY = "API_KEY"; // This will be replaced by the user
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Store user information
