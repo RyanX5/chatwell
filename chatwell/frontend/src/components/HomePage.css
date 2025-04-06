@@ -1,0 +1,124 @@
+/* HomePage.css */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+  }
+  
+  .homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .how-it-works {
+    background-color: #fff;
+    padding: 3rem 2rem;
+    text-align: left;
+    max-width: 800px;
+    width: 100%;
+  }
+  
+  .how-it-works h2 {
+    background: linear-gradient(90deg, #7b2ff7, #4b44d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .how-it-works ol {
+    padding-left: 1.5rem;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .how-it-works li {
+    margin-bottom: 1rem;
+  }
+  
+  .hero {
+    background: linear-gradient(135deg, #6c63ff, violet);
+    color: white;
+    padding: 4rem 2rem;
+    width: 100%;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  .cta-button {
+    background-color: white;
+    color: #4b44d4;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #e6e6ff;
+  }
+  
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 3rem 2rem;
+    max-width: 1000px;
+  }
+  
+  .feature {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    width: 280px;
+  }
+  
+  .feature h2 {
+    color: #4b44d4;
+    margin-bottom: 1rem;
+  }
+  
+  .testimonial {
+    background-color: #eef1f7;
+    padding: 3rem 2rem;
+    width: 100%;
+  }
+  
+  .testimonial blockquote {
+    font-style: italic;
+    font-size: 1.25rem;
+    margin: 0 auto;
+    max-width: 600px;
+  }
+  
+  .testimonial footer {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 1rem;
+  }
+  
+  .footer {
+    background-color: #333;
+    color: white;
+    padding: 1.5rem;
+    width: 100%;
+  }
+  

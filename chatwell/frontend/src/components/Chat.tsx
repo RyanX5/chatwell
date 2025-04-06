@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Chat.css';
 import ReactMarkdown from 'react-markdown';
+import Navbar from './Navbar';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -154,6 +155,8 @@ const Chat: React.FC = () => {
   };
 
   return (
+    <div>
+    <Navbar/>
     <div className="chat-container">
       <div className="messages-container">
         {messages.map((message, index) => (
@@ -200,6 +203,7 @@ const Chat: React.FC = () => {
           onChange={handleFileChange}
         />
       </form>
+    </div>
     </div>
   );
 };
